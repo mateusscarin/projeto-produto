@@ -14,33 +14,17 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Mateus Scarin
  */
-@WebServlet(name = "CadastrarProduto", urlPatterns = {"/CadastrarProduto"})
-public class CadastrarProduto extends HttpServlet {
-
+@WebServlet(name = "ListarProduto", urlPatterns = {"/ListarProduto"})
+public class ListarProduto extends HttpServlet {
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        String nome = request.getParameter("nomeproduto");
-        String descricao = request.getParameter("descricaoproduto");
-
-        String mensagem;
-
-        Produto produto = new Produto();
-        produto.setDescricao(descricao);
-        produto.setNome(nome);
-
         try {
             GenericDAO<Produto> dao = new ProdutoDAOImpl();
-            if (dao.cadastrar(produto)) {
-                mensagem = "Produto cadastrado com sucesso!";
-            } else {
-                mensagem = "Problema ao cadsatrar produto!";
-            }
-            request.setAttribute("mensagem", mensagem);
-            request.getRequestDispatcher("index.jsp").forward(request, response);
+            request.setAttribute("resultado", dao.listar());
+            request.getRequestDispatcher("gerenciarproduto.jsp").forward(request, response);
         } catch (Exception e) {
-            System.out.println("Problema no servlet ao cadastrar produto. "
-                    + "\nErro: " + e.getMessage());
+            System.out.println("Problemas ao listar produtos! \nErro: " + e.getMessage());
             e.printStackTrace();
         }
     }

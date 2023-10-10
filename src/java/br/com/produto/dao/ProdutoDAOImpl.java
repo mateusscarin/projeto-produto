@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -49,7 +50,25 @@ public class ProdutoDAOImpl implements GenericDAO<Produto> {
 
     @Override
     public List<Object> listar() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        List<Object> resultado = new ArrayList<>();
+
+        String sql = "select * from produto";
+
+        try {
+            stmt = conn.prepareCall(sql);
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                resultado.add(new Produto(rs.getInt("id"), rs.getString("nome"), rs.getString("descricao")));
+            }
+        } catch (SQLException e) {
+            System.out.println("Problemas ao listar produtos! \nErro: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            closeConnection(conn, stmt, rs);
+        }
+        return resultado;
     }
 
     @Override
