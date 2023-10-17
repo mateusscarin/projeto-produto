@@ -4,7 +4,6 @@ import br.com.produto.dao.GenericDAO;
 import br.com.produto.dao.ProdutoDAOImpl;
 import br.com.produto.model.Produto;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -15,21 +14,23 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Mateus Scarin
  */
-@WebServlet(name = "ExcluirProduto", urlPatterns = {"/ExcluirProduto"})
-public class ExcluirProduto extends HttpServlet {
+@WebServlet(name = "CarregarProduto", urlPatterns = {"/CarregarProduto"})
+public class CarregarProduto extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         Integer id = Integer.parseInt(request.getParameter("id"));
+
         try {
             GenericDAO<Produto> dao = new ProdutoDAOImpl();
-            dao.excluir(id);
-            request.getRequestDispatcher("ListarProduto").forward(request, response);
+            request.setAttribute("produto", dao.carregar(id));
+            request.getRequestDispatcher("carregarproduto.jsp").forward(request, response);
         } catch (Exception e) {
-            System.out.println("Problemas ao excluir produto! Erro: " + e.getMessage());
+            System.out.println("Erro ao carregar produto! Erro: " + e.getMessage());
             e.printStackTrace();
         }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

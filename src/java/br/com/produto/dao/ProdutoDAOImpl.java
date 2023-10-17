@@ -91,7 +91,27 @@ public class ProdutoDAOImpl implements GenericDAO<Produto> {
 
     @Override
     public Object carregar(int idObject) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        Produto produto = null;
+
+        String sql = "select * from produto where id = ?";
+
+        try {
+            stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, idObject);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                produto = new Produto(rs.getInt("id"), rs.getString("nome"), rs.getString("descricao"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Problemas ao carregar produto! Erro: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            closeConnection(conn, stmt, rs);
+        }
+        return produto;
     }
 
     @Override
