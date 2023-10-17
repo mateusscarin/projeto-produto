@@ -73,7 +73,20 @@ public class ProdutoDAOImpl implements GenericDAO<Produto> {
 
     @Override
     public void excluir(int idObject) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        PreparedStatement stmt = null;
+
+        String sql = "delete from produto where id = ?";
+
+        try {
+            stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, idObject);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Erro ao excluir produto! Erro: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            closeConnection(conn, stmt, null);
+        }
     }
 
     @Override
